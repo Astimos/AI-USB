@@ -42,3 +42,11 @@ see their options.
 - `payload/README.txt` is the user guide that ships on the stick.
 - `docs/ARCHITECTURE.md` explains how everything fits together.
 - `tests/` holds the launcher tests.
+
+## License
+
+Free for non-commercial use under the [PolyForm Noncommercial License 1.0.0](LICENSE.md).
+For commercial use, contact me on GitHub ([@Astimos](https://github.com/Astimos)).
+
+The agents and tools the build downloads (Claude Code, Codex, Antigravity, age) are not part
+of this project and keep their own licenses.
