@@ -1,0 +1,31 @@
+#!/bin/bash
+# AI-USB rescue bootstrap (baked into the image; keep it small and stable).
+# Finds the stick's data partition (label AIUSB), mounts it at /mnt/aiusb and
+# hands over to rescue-session.sh, which lives on the stick and can be updated
+# without rebuilding the image.
+set -u
+readonly MNT=/mnt/aiusb
+readonly SESSION="$MNT/aiusb/rescue/rescue-session.sh"
+
+fallback() {
+    printf '\n%s\n' "$1"
+    printf 'You are in a root shell. Type "aiusb" to try again, "poweroff" to shut down.\n\n'
+    exec bash -l
+}
+
+printf '\nAI-USB rescue: looking for the AIUSB data partition...\n'
+dev=""
+for _ in $(seq 1 20); do
+    udevadm settle --timeout=2 2>/dev/null
+    dev=$(blkid -L AIUSB 2>/dev/null) && [ -n "$dev" ] && break
+    sleep 1
+done
+[ -n "$dev" ] || fallback "Could not find a partition labelled AIUSB."
+
+mkdir -p "$MNT"
+if ! findmnt -rn "$MNT" >/dev/null 2>&1; then
+    mount -t exfat -o rw,uid=0,gid=0,fmask=0022,dmask=0022,iocharset=utf8 "$dev" "$MNT" \
+        || fallback "Could not mount $dev at $MNT."
+fi
+[ -f "$SESSION" ] || fallback "The stick is mounted, but $SESSION is missing."
+exec bash "$SESSION"

@@ -1,0 +1,3 @@
+#!/bin/bash
+# Reopen the AI-USB rescue menu.
+exec bash /mnt/aiusb/aiusb/rescue/rescue-session.sh "$@"

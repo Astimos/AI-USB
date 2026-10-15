@@ -1,0 +1,5 @@
+build/
+*.img
+*.iso
+__pycache__/
+docs/HANDOFF.md
